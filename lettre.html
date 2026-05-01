@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>Ma Lettre</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --c1: #ff6fd8;
+        --c2: #ff9a3c;
+        --c3: #a78bfa;
+        --c4: #38bdf8;
+        --c5: #34d399;
+        --dark: #0d0d1a;
+        --card: rgba(255, 255, 255, 0.07);
+        --border: rgba(255, 255, 255, 0.15);
+      }
+
+      html,
+      body {
+        min-height: 100%;
+        background: var(--dark);
+        color: #fff;
+        font-family: "DM Sans", sans-serif;
+        overflow-x: hidden;
+      }
+
+      .bg {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+      }
+      .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.4;
+        animation: drift 12s ease-in-out infinite alternate;
+      }
+      .blob-1 {
+        width: 300px;
+        height: 300px;
+        background: var(--c1);
+        top: -60px;
+        left: -40px;
+        animation-delay: 0s;
+      }
+      .blob-2 {
+        width: 260px;
+        height: 260px;
+        background: var(--c3);
+        bottom: 20%;
+        right: -60px;
+        animation-delay: -4s;
+      }
+      .blob-3 {
+        width: 200px;
+        height: 200px;
+        background: var(--c2);
+        bottom: -40px;
+        left: 20%;
+        animation-delay: -8s;
+      }
+
+      @keyframes drift {
+        from {
+          transform: translate(0, 0) scale(1);
+        }
+        to {
+          transform: translate(20px, 15px) scale(1.07);
+        }
+      }
+
+      canvas#particles {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      main {
+        position: relative;
+        z-index: 2;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 56px 24px 100px;
+        text-align: center;
+      }
+
+      .page-label {
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 12px;
+        opacity: 0;
+        animation: fadeUp 0.7s ease forwards 0.2s;
+      }
+
+      .headline {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(30px, 8vw, 48px);
+        line-height: 1.15;
+        margin-bottom: 8px;
+        opacity: 0;
+        animation: fadeUp 0.8s ease forwards 0.4s;
+      }
+      .headline span {
+        background: linear-gradient(135deg, var(--c1), var(--c2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .sub {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.45);
+        margin-bottom: 40px;
+        opacity: 0;
+        animation: fadeUp 0.8s ease forwards 0.6s;
+      }
+
+      /* ─── ENVELOPPE ANIMATION ─── */
+      .envelope-wrap {
+        margin-bottom: 32px;
+        opacity: 0;
+        animation: fadeUp 0.8s ease forwards 0.8s;
+      }
+      .envelope {
+        font-size: 56px;
+        display: inline-block;
+        animation: envFloat 3s ease-in-out infinite;
+        filter: drop-shadow(0 0 20px rgba(255, 111, 216, 0.6));
+      }
+      @keyframes envFloat {
+        0%,
+        100% {
+          transform: translateY(0) rotate(-3deg);
+        }
+        50% {
+          transform: translateY(-10px) rotate(3deg);
+        }
+      }
+
+      /* ─── LETTRE ─── */
+      .letter {
+        background: var(--card);
+        border: 1px solid var(--border);
+        backdrop-filter: blur(20px);
+        border-radius: 28px;
+        padding: 32px 24px;
+        width: 100%;
+        max-width: 360px;
+        text-align: left;
+        opacity: 0;
+        animation: fadeUp 0.9s ease forwards 1s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .letter::before {
+        content: "💌";
+        position: absolute;
+        top: -20px;
+        right: -20px;
+        font-size: 100px;
+        opacity: 0.04;
+        transform: rotate(15deg);
+      }
+
+      .letter-date {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.3);
+        margin-bottom: 20px;
+        font-style: italic;
+      }
+
+      .letter-body {
+        font-size: 15px;
+        line-height: 1.85;
+        color: rgba(255, 255, 255, 0.78);
+        font-family: "DM Sans", sans-serif;
+        font-weight: 300;
+      }
+
+      .letter-body p {
+        margin-bottom: 18px;
+      }
+
+      .letter-body p:last-child {
+        margin-bottom: 0;
+      }
+
+      .letter-body .highlight {
+        color: #fff;
+        font-weight: 500;
+      }
+
+      .letter-sign {
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.6);
+        text-align: right;
+      }
+
+      .letter-sign span {
+        background: linear-gradient(135deg, var(--c1), var(--c3));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 18px;
+      }
+
+      /* ─── HEARTS FLOTTANTS ─── */
+      .hearts {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .heart-float {
+        position: absolute;
+        bottom: -40px;
+        font-size: 18px;
+        animation: floatUp linear infinite;
+        opacity: 0;
+      }
+      @keyframes floatUp {
+        0% {
+          transform: translateY(0) scale(0.8);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.6;
+        }
+        90% {
+          opacity: 0.3;
+        }
+        100% {
+          transform: translateY(-110vh) scale(1.1);
+          opacity: 0;
+        }
+      }
+
+      /* ─── BOUTON SUIVANT ─── */
+      .btn-next {
+        display: inline-block;
+        margin-top: 40px;
+        padding: 16px 40px;
+        background: linear-gradient(135deg, var(--c1), var(--c2));
+        border-radius: 999px;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 500;
+        text-decoration: none;
+        box-shadow: 0 8px 32px rgba(255, 111, 216, 0.4);
+        opacity: 0;
+        animation: fadeUp 1s ease forwards 1.8s;
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .btn-next:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 40px rgba(255, 111, 216, 0.6);
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(28px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+    </div>
+
+    <canvas id="particles"></canvas>
+    <div class="hearts" id="hearts"></div>
+
+    <main>
+      <p class="page-label">💌 Rien que pour toi</p>
+      <h1 class="headline">Ma lettre<br /><span>pour toi</span></h1>
+      <p class="sub">
+        Des mots que je n'aurais peut-être jamais dits autrement.
+      </p>
+
+      <div class="envelope-wrap">
+        <span class="envelope">💌</span>
+      </div>
+
+      <div class="letter">
+        <p class="letter-date">En ce jour si particulier…</p>
+
+        <div class="letter-body">
+          <p>
+            Marie Ange, je ne suis pas quelqu'un qui parle beaucoup de ce qu'il
+            ressent. Mais aujourd'hui, pour toi, je fais une exception.
+          </p>
+          <p>
+            Depuis que tu es entrée dans ma vie, il y a quelque chose qui a
+            changé —
+            <span class="highlight"
+              >quelque chose de discret, mais de réel.</span
+            >
+            Ce n'est pas spectaculaire, ce n'est pas bruyant. C'est juste… là.
+            Chaque fois que je te vois.
+          </p>
+          <p>
+            Tu ne le sais peut-être pas, mais ta présence a un effet que tu ne
+            contrôles pas.
+            <span class="highlight"
+              >Tu illumines les moments sans même essayer.</span
+            >
+            Et ça, c'est rare.
+          </p>
+          <p>
+            Et ce n'est pas un hasard que tu sois née un 1er mai.
+            <span class="highlight">Tu es travailleuse</span> — tu donnes le
+            meilleur de toi dans tout ce que tu fais, et ça, c'est une qualité
+            que peu de gens ont vraiment.
+          </p>
+          <p>
+            En ce jour d'anniversaire, je voulais juste que tu saches que tu
+            comptes. Pas de grandes promesses, pas de grands discours — juste la
+            vérité, simplement.
+          </p>
+          <p>
+            <span class="highlight">Joyeux anniversaire, <br> ETCHUMOU " YAH " Marie Ange Deborah.</span> <br>
+            Tu mérites tout le bonheur du monde, et un peu plus encore.
+          </p>
+        </div>
+
+        <div class="letter-sign">
+          Avec tout mon amour,<br />
+          <span>Celui qui t'aime 💖</span>
+        </div>
+      </div>
+
+      <a class="btn-next" href="anniversaire.html">Joyeux Anniversaire 🎉</a>
+    </main>
+
+    <script>
+      // ─── PARTICLES ───
+      const canvas = document.getElementById("particles");
+      const ctx = canvas.getContext("2d");
+      let W,
+        H,
+        particles = [];
+      const colors = ["#ff6fd8", "#ff9a3c", "#a78bfa", "#38bdf8", "#34d399"];
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+      function createParticle() {
+        return {
+          x: Math.random() * W,
+          y: Math.random() * H + H,
+          r: Math.random() * 3 + 1,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 0.6,
+          vy: -(Math.random() * 1.2 + 0.4),
+          alpha: Math.random() * 0.6 + 0.3,
+          life: 0,
+          maxLife: Math.random() * 200 + 100,
+        };
+      }
+      function init() {
+        particles = Array.from({ length: 50 }, createParticle);
+      }
+      function anim() {
+        ctx.clearRect(0, 0, W, H);
+        particles.forEach((p, i) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life++;
+          const fade =
+            p.life < 30
+              ? p.life / 30
+              : p.life > p.maxLife - 30
+                ? (p.maxLife - p.life) / 30
+                : 1;
+          ctx.save();
+          ctx.globalAlpha = p.alpha * fade;
+          ctx.fillStyle = p.color;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          if (p.life >= p.maxLife || p.y < -20) particles[i] = createParticle();
+        });
+        requestAnimationFrame(anim);
+      }
+      resize();
+      init();
+      anim();
+      window.addEventListener("resize", resize);
+
+      // ─── COEURS FLOTTANTS ───
+      const heartsContainer = document.getElementById("hearts");
+      const heartEmojis = ["💖", "💗", "💓", "💕", "✨", "🌸"];
+      function spawnHeart() {
+        const h = document.createElement("span");
+        h.className = "heart-float";
+        h.textContent =
+          heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+        h.style.left = Math.random() * 100 + "vw";
+        h.style.fontSize = Math.random() * 16 + 12 + "px";
+        const dur = Math.random() * 6 + 6;
+        h.style.animationDuration = dur + "s";
+        h.style.animationDelay = Math.random() * 4 + "s";
+        heartsContainer.appendChild(h);
+        setTimeout(() => h.remove(), (dur + 4) * 1000);
+      }
+      for (let i = 0; i < 12; i++) spawnHeart();
+      setInterval(spawnHeart, 1500);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>Tes plus belles photos</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --c1: #ff6fd8;
+        --c2: #ff9a3c;
+        --c3: #a78bfa;
+        --c4: #38bdf8;
+        --c5: #34d399;
+        --dark: #0d0d1a;
+        --card: rgba(255, 255, 255, 0.07);
+        --border: rgba(255, 255, 255, 0.15);
+      }
+
+      html,
+      body {
+        min-height: 100%;
+        background: var(--dark);
+        color: #fff;
+        font-family: "DM Sans", sans-serif;
+        overflow-x: hidden;
+      }
+
+      .bg {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+      }
+      .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.4;
+        animation: drift 12s ease-in-out infinite alternate;
+      }
+      .blob-1 {
+        width: 300px;
+        height: 300px;
+        background: var(--c1);
+        top: -60px;
+        left: -60px;
+        animation-delay: 0s;
+      }
+      .blob-2 {
+        width: 260px;
+        height: 260px;
+        background: var(--c4);
+        bottom: 20%;
+        right: -60px;
+        animation-delay: -4s;
+      }
+      .blob-3 {
+        width: 200px;
+        height: 200px;
+        background: var(--c3);
+        bottom: -40px;
+        left: 20%;
+        animation-delay: -8s;
+      }
+
+      @keyframes drift {
+        from {
+          transform: translate(0, 0) scale(1);
+        }
+        to {
+          transform: translate(20px, 15px) scale(1.07);
+        }
+      }
+
+      canvas#particles {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      main {
+        position: relative;
+        z-index: 2;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 56px 20px 100px;
+        text-align: center;
+      }
+
+      .page-label {
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 12px;
+        opacity: 0;
+        animation: fadeUp 0.7s ease forwards 0.2s;
+      }
+
+      .headline {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(30px, 8vw, 48px);
+        line-height: 1.15;
+        margin-bottom: 8px;
+        opacity: 0;
+        animation: fadeUp 0.8s ease forwards 0.4s;
+      }
+      .headline span {
+        background: linear-gradient(135deg, var(--c4), var(--c1));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .sub {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.45);
+        margin-bottom: 40px;
+        opacity: 0;
+        animation: fadeUp 0.8s ease forwards 0.6s;
+      }
+
+      /* ─── GALERIE ─── */
+      .gallery {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
+        max-width: 380px;
+      }
+
+      .media-item {
+        position: relative;
+        border-radius: 24px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        background: var(--card);
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .media-item:active {
+        transform: scale(0.97);
+      }
+
+      .media-item img,
+      .media-item video {
+        width: 100%;
+        display: block;
+        object-fit: cover;
+        max-height: 320px;
+      }
+
+      /* grande photo en haut */
+      .media-item.large img,
+      .media-item.large video {
+        max-height: 400px;
+      }
+
+      /* deux petites côte à côte */
+      .media-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        width: 100%;
+        max-width: 380px;
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      .media-row .media-item {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* overlay dégradé sur chaque média */
+      .media-item::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to top,
+          rgba(13, 13, 26, 0.5) 0%,
+          transparent 50%
+        );
+        pointer-events: none;
+      }
+
+      /* badge photo/video */
+      .media-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(8px);
+        border-radius: 999px;
+        padding: 4px 10px;
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.8);
+        z-index: 2;
+        letter-spacing: 0.05em;
+      }
+
+      /* glow au survol */
+      .media-item:hover {
+        box-shadow: 0 0 32px -4px var(--c1);
+      }
+      .media-row .media-item:nth-child(2):hover {
+        box-shadow: 0 0 32px -4px var(--c3);
+      }
+
+      /* ─── LIGHTBOX ─── */
+      .lightbox {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: rgba(0, 0, 0, 0.92);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+      .lightbox.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .lightbox img,
+      .lightbox video {
+        max-width: 100%;
+        max-height: 85vh;
+        border-radius: 16px;
+        object-fit: contain;
+      }
+      .lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 28px;
+        color: #fff;
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* ─── BOUTON SUIVANT ─── */
+      .btn-next {
+        display: inline-block;
+        margin-top: 48px;
+        padding: 16px 40px;
+        background: linear-gradient(135deg, var(--c1), var(--c3));
+        border-radius: 999px;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 500;
+        text-decoration: none;
+        box-shadow: 0 8px 32px rgba(255, 111, 216, 0.4);
+        opacity: 0;
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .btn-next:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 40px rgba(255, 111, 216, 0.6);
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(28px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+    </div>
+
+    <canvas id="particles"></canvas>
+
+    <main>
+      <p class="page-label">📸 Galerie</p>
+      <h1 class="headline">Tes plus<br /><span>belles photos</span></h1>
+      <p class="sub">Chaque image, un souvenir que je garde précieusement.</p>
+
+      <audio autoplay loop>
+        <source src="./media/Joyeux Anniversaire 🥳 #pourtoi.mp3" type="audio/mp3" />
+      </audio>
+
+      <div class="gallery">
+        <!-- PHOTO 1 - grande -->
+        <div
+          class="media-item large"
+          data-src="./tofs.deos/tof1.jpeg"
+          data-type="img"
+        >
+          <span class="media-badge">📷 Photo</span>
+          <img src="./tofs.deos/tof1.jpeg" alt="Marie Ange" />
+        </div>
+
+        <!-- PHOTOS 2 & 3 côte à côte -->
+        <div class="media-row">
+          <div
+            class="media-item"
+            data-src="./tofs.deos/tof2.jpeg"
+            data-type="img"
+          >
+            <span class="media-badge">📷</span>
+            <img src="./tofs.deos/tof2.jpeg" alt="Marie Ange" />
+          </div>
+          <div
+            class="media-item"
+            data-src="./tofs.deos/tof3.jpeg"
+            data-type="img"
+          >
+            <span class="media-badge">📷</span>
+            <img src="./tofs.deos/tof3.jpeg" alt="Marie Ange" />
+          </div>
+        </div>
+
+        <!-- VIDEO 1 -->
+        <div
+          class="media-item"
+          data-src="./tofs.deos/deo1.mp4"
+          data-type="video"
+        >
+          <span class="media-badge">🎬 Vidéo</span>
+          <video
+            src="./tofs.deos/deo1.mp4"
+            autoplay
+            muted
+            loop
+            playsinline
+          ></video>
+        </div>
+
+        <!-- VIDEO 2 -->
+        <div
+          class="media-item"
+          data-src="./tofs.deos/deo2.mp4"
+          data-type="video"
+        >
+          <span class="media-badge">🎬 Vidéo</span>
+          <video
+            src="./tofs.deos/deo2.mp4"
+            autoplay
+            muted
+            loop
+            playsinline
+          ></video>
+        </div>
+
+        <!-- VIDEOS 3 & 4 côte à côte -->
+        <div class="media-row">
+          <div
+            class="media-item"
+            data-src="./tofs.deos/deo3.mp4"
+            data-type="video"
+          >
+            <span class="media-badge">🎬</span>
+            <video
+              src="./tofs.deos/deo3.mp4"
+              autoplay
+              muted
+              loop
+              playsinline
+            ></video>
+          </div>
+          <div
+            class="media-item"
+            data-src="./tofs.deos/deo4.mp4"
+            data-type="video"
+          >
+            <span class="media-badge">🎬</span>
+            <video
+              src="./tofs.deos/deo4.mp4"
+              autoplay
+              muted
+              loop
+              playsinline
+            ></video>
+          </div>
+        </div>
+
+        <!-- VIDEO 5 -->
+        <div
+          class="media-item"
+          data-src="./tofs.deos/deo5.mp4"
+          data-type="video"
+        >
+          <span class="media-badge">🎬 Vidéo</span>
+          <video
+            src="./tofs.deos/deo5.mp4"
+            autoplay
+            muted
+            loop
+            playsinline
+          ></video>
+        </div>
+      </div>
+
+      <a class="btn-next" href="./jaime.html">Ce que j'aime chez toi 💛</a>
+    </main>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox">
+      <button class="lightbox-close" id="lbClose">✕</button>
+      <img id="lbImg" src="" alt="" style="display: none" />
+      <video
+        id="lbVideo"
+        src=""
+        muted
+        loop
+        playsinline
+        style="display: none"
+      ></video>
+    </div>
+
+    <script>
+      // ─── PARTICLES ───
+      const canvas = document.getElementById("particles");
+      const ctx = canvas.getContext("2d");
+      let W,
+        H,
+        particles = [];
+      const colors = ["#ff6fd8", "#ff9a3c", "#a78bfa", "#38bdf8", "#34d399"];
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+      function createParticle() {
+        return {
+          x: Math.random() * W,
+          y: Math.random() * H + H,
+          r: Math.random() * 3 + 1,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 0.6,
+          vy: -(Math.random() * 1.2 + 0.4),
+          alpha: Math.random() * 0.6 + 0.3,
+          life: 0,
+          maxLife: Math.random() * 200 + 100,
+        };
+      }
+      function init() {
+        particles = Array.from({ length: 50 }, createParticle);
+      }
+      function anim() {
+        ctx.clearRect(0, 0, W, H);
+        particles.forEach((p, i) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life++;
+          const fade =
+            p.life < 30
+              ? p.life / 30
+              : p.life > p.maxLife - 30
+                ? (p.maxLife - p.life) / 30
+                : 1;
+          ctx.save();
+          ctx.globalAlpha = p.alpha * fade;
+          ctx.fillStyle = p.color;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          if (p.life >= p.maxLife || p.y < -20) particles[i] = createParticle();
+        });
+        requestAnimationFrame(anim);
+      }
+      resize();
+      init();
+      anim();
+      window.addEventListener("resize", resize);
+
+      // ─── ANIMATION SCROLL ───
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.animation = "fadeUp 0.7s ease forwards";
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+
+      document
+        .querySelectorAll(".media-item, .media-row")
+        .forEach((el) => observer.observe(el));
+
+      // Bouton suivant
+      setTimeout(() => {
+        document.querySelector(".btn-next").style.animation =
+          "fadeUp 0.7s ease forwards";
+      }, 1200);
+
+      // ─── LIGHTBOX ───
+      const lightbox = document.getElementById("lightbox");
+      const lbImg = document.getElementById("lbImg");
+      const lbVideo = document.getElementById("lbVideo");
+      const lbClose = document.getElementById("lbClose");
+
+      document.querySelectorAll(".media-item").forEach((item) => {
+        item.addEventListener("click", () => {
+          const src = item.dataset.src;
+          const type = item.dataset.type;
+          if (type === "img") {
+            lbImg.src = src;
+            lbImg.style.display = "block";
+            lbVideo.style.display = "none";
+            lbVideo.pause();
+          } else {
+            lbVideo.src = src;
+            lbVideo.style.display = "block";
+            lbVideo.play();
+            lbImg.style.display = "none";
+          }
+          lightbox.classList.add("open");
+        });
+      });
+
+      lbClose.addEventListener("click", () => {
+        lightbox.classList.remove("open");
+        lbVideo.pause();
+        lbVideo.src = "";
+        lbImg.src = "";
+      });
+
+      lightbox.addEventListener("click", (e) => {
+        if (e.target === lightbox) {
+          lightbox.classList.remove("open");
+          lbVideo.pause();
+          lbVideo.src = "";
+          lbImg.src = "";
+        }
+      });
+    </script>
+  </body>
+</html>

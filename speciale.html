@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>Pourquoi tu es spéciale</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --c1: #ff6fd8;
+        --c2: #ff9a3c;
+        --c3: #a78bfa;
+        --c4: #38bdf8;
+        --c5: #34d399;
+        --dark: #0d0d1a;
+        --card: rgba(255, 255, 255, 0.07);
+        --border: rgba(255, 255, 255, 0.15);
+      }
+
+      html,
+      body {
+        min-height: 100%;
+        background: var(--dark);
+        color: #fff;
+        font-family: "DM Sans", sans-serif;
+        overflow-x: hidden;
+      }
+
+      /* ─── BACKGROUND ─── */
+      .bg {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+      }
+      .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.4;
+        animation: drift 12s ease-in-out infinite alternate;
+      }
+      .blob-1 {
+        width: 300px;
+        height: 300px;
+        background: var(--c3);
+        top: -60px;
+        right: -60px;
+        animation-delay: 0s;
+      }
+      .blob-2 {
+        width: 260px;
+        height: 260px;
+        background: var(--c1);
+        bottom: 20%;
+        left: -60px;
+        animation-delay: -4s;
+      }
+      .blob-3 {
+        width: 200px;
+        height: 200px;
+        background: var(--c2);
+        bottom: -40px;
+        right: 10%;
+        animation-delay: -8s;
+      }
+
+      @keyframes drift {
+        from {
+          transform: translate(0, 0) scale(1);
+        }
+        to {
+          transform: translate(20px, 15px) scale(1.07);
+        }
+      }
+
+      canvas#particles {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      /* ─── MAIN ─── */
+      main {
+        position: relative;
+        z-index: 2;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 56px 24px 100px;
+        text-align: center;
+      }
+
+      /* ─── HEADER ─── */
+      .page-label {
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 12px;
+        opacity: 0;
+        animation: fadeUp 0.7s ease forwards 0.2s;
+      }
+
+      .headline {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(32px, 9vw, 52px);
+        line-height: 1.15;
+        margin-bottom: 8px;
+        opacity: 0;
+        animation: fadeUp 0.8s ease forwards 0.4s;
+      }
+      .headline span {
+        background: linear-gradient(135deg, var(--c1), var(--c3), var(--c2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .sub {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.45);
+        margin-bottom: 48px;
+        opacity: 0;
+        animation: fadeUp 0.8s ease forwards 0.6s;
+      }
+
+      /* ─── CARDS ─── */
+      .cards {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
+        max-width: 360px;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        backdrop-filter: blur(16px);
+        border-radius: 24px;
+        padding: 24px 20px;
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        text-align: left;
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease,
+          border-color 0.3s ease;
+      }
+
+      .card:active {
+        transform: scale(0.97);
+      }
+
+      .card.visible {
+        animation: fadeUp 0.7s ease forwards;
+      }
+
+      .card:nth-child(1) {
+        --accent: var(--c1);
+        animation-delay: 0.8s;
+      }
+      .card:nth-child(2) {
+        --accent: var(--c3);
+        animation-delay: 1s;
+      }
+      .card:nth-child(3) {
+        --accent: var(--c5);
+        animation-delay: 1.2s;
+      }
+      .card:nth-child(4) {
+        --accent: var(--c2);
+        animation-delay: 1.4s;
+      }
+      .card:nth-child(5) {
+        --accent: var(--c4);
+        animation-delay: 1.6s;
+      }
+
+      .card:hover {
+        border-color: var(--accent);
+        box-shadow: 0 0 28px -6px var(--accent);
+      }
+
+      .card-icon {
+        font-size: 36px;
+        flex-shrink: 0;
+        filter: drop-shadow(0 0 10px var(--accent));
+        animation: iconFloat 3s ease-in-out infinite;
+      }
+      .card:nth-child(2) .card-icon {
+        animation-delay: -0.5s;
+      }
+      .card:nth-child(3) .card-icon {
+        animation-delay: -1s;
+      }
+      .card:nth-child(4) .card-icon {
+        animation-delay: -1.5s;
+      }
+      .card:nth-child(5) .card-icon {
+        animation-delay: -2s;
+      }
+
+      @keyframes iconFloat {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-5px);
+        }
+      }
+
+      .card-title {
+        font-family: "Playfair Display", serif;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: #fff;
+      }
+      .card-desc {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.5);
+        line-height: 1.6;
+      }
+
+      /* ─── BOUTON SUIVANT ─── */
+      .btn-next {
+        display: inline-block;
+        margin-top: 48px;
+        padding: 16px 40px;
+        background: linear-gradient(135deg, var(--c1), var(--c3));
+        border-radius: 999px;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 500;
+        text-decoration: none;
+        box-shadow: 0 8px 32px rgba(255, 111, 216, 0.4);
+        opacity: 0;
+        animation: fadeUp 1s ease forwards 2s;
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .btn-next:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 40px rgba(255, 111, 216, 0.6);
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(28px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+    </div>
+
+    <canvas id="particles"></canvas>
+
+    <main>
+      <p class="page-label">✨ Pour Marie Ange</p>
+      <h1 class="headline">Pourquoi tu es<br /><span>si spéciale</span></h1>
+      <p class="sub">
+        Il y a des choses en toi que peu de gens voient…<br />moi je les vois
+        toutes.
+      </p>
+
+      <div class="cards">
+        <div class="card">
+          <span class="card-icon">🌹</span>
+          <div class="card-body">
+            <div class="card-title">Tu es belle</div>
+            <div class="card-desc">
+              Pas juste à l'extérieur — il y a une lumière en toi qui attire
+              sans même que tu t'en rendes compte.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="card-icon">😄</span>
+          <div class="card-body">
+            <div class="card-title">Tu es taquine</div>
+            <div class="card-desc">
+              Tu sais toujours comment me faire sourire, même quand tu fais
+              semblant d'être sérieuse.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="card-icon">☀️</span>
+          <div class="card-body">
+            <div class="card-title">Ton sourire</div>
+            <div class="card-desc">
+              Il change l'ambiance d'une pièce entière. Difficile de rester
+              indifférent face à ce sourire-là.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="card-icon">🎵</span>
+          <div class="card-body">
+            <div class="card-title">Ta voix</div>
+            <div class="card-desc">
+              Quand tu chantes, on s'arrête. Tu as ce don rare de toucher les
+              gens avec ta voix sans même forcer.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="card-icon">🌟</span>
+          <div class="card-body">
+            <div class="card-title">Tu me rends joyeux</div>
+            <div class="card-desc">
+              Je le cache bien, mais chaque fois que je te vois, quelque chose
+              en moi s'illumine. Toujours.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <a class="btn-next" href="./photos.html">Voir tes plus belles photos 📸</a>
+    </main>
+
+    <script>
+      const canvas = document.getElementById("particles");
+      const ctx = canvas.getContext("2d");
+      let W,
+        H,
+        particles = [];
+      const colors = ["#ff6fd8", "#ff9a3c", "#a78bfa", "#38bdf8", "#34d399"];
+
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+
+      function createParticle() {
+        return {
+          x: Math.random() * W,
+          y: Math.random() * H + H,
+          r: Math.random() * 3 + 1,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 0.6,
+          vy: -(Math.random() * 1.2 + 0.4),
+          alpha: Math.random() * 0.6 + 0.3,
+          life: 0,
+          maxLife: Math.random() * 200 + 100,
+        };
+      }
+
+      function init() {
+        particles = Array.from({ length: 50 }, createParticle);
+      }
+
+      function anim() {
+        ctx.clearRect(0, 0, W, H);
+        particles.forEach((p, i) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life++;
+          const fade =
+            p.life < 30
+              ? p.life / 30
+              : p.life > p.maxLife - 30
+                ? (p.maxLife - p.life) / 30
+                : 1;
+          ctx.save();
+          ctx.globalAlpha = p.alpha * fade;
+          ctx.fillStyle = p.color;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          if (p.life >= p.maxLife || p.y < -20) particles[i] = createParticle();
+        });
+        requestAnimationFrame(anim);
+      }
+
+      resize();
+      init();
+      anim();
+      window.addEventListener("resize", resize);
+    </script>
+    <script>
+      // Déclenche l'animation des cartes
+      document.querySelectorAll(".card").forEach((card, i) => {
+        setTimeout(
+          () => {
+            card.style.animation = `fadeUp 0.7s ease forwards`;
+          },
+          800 + i * 200,
+        );
+      });
+    </script>
+  </body>
+</html>

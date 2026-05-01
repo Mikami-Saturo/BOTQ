@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>Ce que j'aime chez toi</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --c1: #ff6fd8;
+        --c2: #ff9a3c;
+        --c3: #a78bfa;
+        --c4: #38bdf8;
+        --c5: #34d399;
+        --dark: #0d0d1a;
+        --card: rgba(255, 255, 255, 0.07);
+        --border: rgba(255, 255, 255, 0.15);
+      }
+
+      html,
+      body {
+        min-height: 100%;
+        background: var(--dark);
+        color: #fff;
+        font-family: "DM Sans", sans-serif;
+        overflow-x: hidden;
+      }
+
+      .bg {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+      }
+      .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.4;
+        animation: drift 12s ease-in-out infinite alternate;
+      }
+      .blob-1 {
+        width: 300px;
+        height: 300px;
+        background: var(--c2);
+        top: -60px;
+        right: -40px;
+        animation-delay: 0s;
+      }
+      .blob-2 {
+        width: 260px;
+        height: 260px;
+        background: var(--c5);
+        bottom: 20%;
+        left: -60px;
+        animation-delay: -4s;
+      }
+      .blob-3 {
+        width: 200px;
+        height: 200px;
+        background: var(--c1);
+        bottom: -40px;
+        right: 20%;
+        animation-delay: -8s;
+      }
+
+      @keyframes drift {
+        from {
+          transform: translate(0, 0) scale(1);
+        }
+        to {
+          transform: translate(20px, 15px) scale(1.07);
+        }
+      }
+
+      canvas#particles {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      main {
+        position: relative;
+        z-index: 2;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 56px 24px 100px;
+        text-align: center;
+      }
+
+      .page-label {
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 12px;
+        opacity: 0;
+        animation: fadeUp 0.7s ease forwards 0.2s;
+      }
+
+      .headline {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(30px, 8vw, 48px);
+        line-height: 1.15;
+        margin-bottom: 8px;
+        opacity: 0;
+        animation: fadeUp 0.8s ease forwards 0.4s;
+      }
+      .headline span {
+        background: linear-gradient(135deg, var(--c2), var(--c5));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .sub {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.45);
+        margin-bottom: 48px;
+        opacity: 0;
+        animation: fadeUp 0.8s ease forwards 0.6s;
+      }
+
+      /* ─── ITEMS ─── */
+      .items {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
+        max-width: 360px;
+      }
+
+      .item {
+        background: var(--card);
+        border: 1px solid var(--border);
+        backdrop-filter: blur(16px);
+        border-radius: 28px;
+        padding: 28px 22px;
+        text-align: left;
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+          box-shadow 0.3s ease,
+          border-color 0.3s ease,
+          transform 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--accent);
+        border-radius: 4px 0 0 4px;
+      }
+
+      .item:nth-child(1) {
+        --accent: var(--c2);
+      }
+      .item:nth-child(2) {
+        --accent: var(--c5);
+      }
+      .item:nth-child(3) {
+        --accent: var(--c1);
+      }
+      .item:nth-child(4) {
+        --accent: var(--c4);
+      }
+
+      .item:hover {
+        border-color: var(--accent);
+        box-shadow: 0 0 28px -6px var(--accent);
+        transform: translateY(-3px);
+      }
+
+      .item-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .item-icon {
+        font-size: 32px;
+        animation: iconFloat 3s ease-in-out infinite;
+        flex-shrink: 0;
+      }
+      .item:nth-child(2) .item-icon {
+        animation-delay: -0.8s;
+      }
+      .item:nth-child(3) .item-icon {
+        animation-delay: -1.6s;
+      }
+      .item:nth-child(4) .item-icon {
+        animation-delay: -2.4s;
+      }
+
+      @keyframes iconFloat {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-5px);
+        }
+      }
+
+      .item-title {
+        font-family: "Playfair Display", serif;
+        font-size: 19px;
+        font-weight: 700;
+        color: #fff;
+      }
+
+      .item-desc {
+        font-size: 13.5px;
+        color: rgba(255, 255, 255, 0.52);
+        line-height: 1.65;
+        padding-left: 4px;
+      }
+
+      /* ─── QUOTE FINALE ─── */
+      .quote {
+        margin-top: 40px;
+        max-width: 320px;
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.4);
+        line-height: 1.7;
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      /* ─── BOUTON SUIVANT ─── */
+      .btn-next {
+        display: inline-block;
+        margin-top: 36px;
+        padding: 16px 40px;
+        background: linear-gradient(135deg, var(--c2), var(--c5));
+        border-radius: 999px;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 500;
+        text-decoration: none;
+        box-shadow: 0 8px 32px rgba(255, 154, 60, 0.4);
+        opacity: 0;
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .btn-next:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 40px rgba(255, 154, 60, 0.6);
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(28px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+    </div>
+
+    <canvas id="particles"></canvas>
+
+    <main>
+      <p class="page-label">💛 Pour Marie Ange</p>
+      <h1 class="headline">Ce que<br /><span>j'aime chez toi</span></h1>
+      <p class="sub">Des petites choses qui font toute la différence.</p>
+
+      <div class="items">
+        <div class="item">
+          <div class="item-top">
+            <span class="item-icon">🌿</span>
+            <div class="item-title">Ta façon d'être</div>
+          </div>
+          <p class="item-desc">
+            Il y a quelque chose dans ta manière d'exister qui est rare. Tu
+            n'essaies pas d'être ce que tu n'es pas — et c'est ça qui te rend
+            unique.
+          </p>
+        </div>
+
+        <div class="item">
+          <div class="item-top">
+            <span class="item-icon">🤍</span>
+            <div class="item-title">Simple et naturelle</div>
+          </div>
+          <p class="item-desc">
+            Tu n'as pas besoin de faire des efforts pour impressionner. Tu es
+            toi, simplement, et c'est cette authenticité qui te rend différente
+            de tout le monde.
+          </p>
+        </div>
+
+        <div class="item">
+          <div class="item-top">
+            <span class="item-icon">✨</span>
+            <div class="item-title">Ton attitude</div>
+          </div>
+          <p class="item-desc">
+            Cette façon que t'as de te tenir, de réagir, d'aborder les choses —
+            il y a une énergie en toi qui attire sans même que tu t'en rendes
+            compte.
+          </p>
+        </div>
+
+        <div class="item">
+          <div class="item-top">
+            <span class="item-icon">😂</span>
+            <div class="item-title">Tu aimes blaguer</div>
+          </div>
+          <p class="item-desc">
+            Avec toi je m'ennuie jamais. Tu sais toujours faire quelquechose pour 
+            me taquiner — et j'adore ça chez toi.
+            La prochaine fois c'est moi qui vais avoir raison tu verras 😎
+          </p>
+        </div>
+      </div>
+
+      <p class="quote">
+        "Ce sont les petites choses qui font les grandes personnes."
+      </p>
+
+      <a class="btn-next" href="./lettre.html">Lire ma lettre pour toi 💌</a>
+    </main>
+
+    <script>
+      // ─── PARTICLES ───
+      const canvas = document.getElementById("particles");
+      const ctx = canvas.getContext("2d");
+      let W,
+        H,
+        particles = [];
+      const colors = ["#ff6fd8", "#ff9a3c", "#a78bfa", "#38bdf8", "#34d399"];
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+      function createParticle() {
+        return {
+          x: Math.random() * W,
+          y: Math.random() * H + H,
+          r: Math.random() * 3 + 1,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 0.6,
+          vy: -(Math.random() * 1.2 + 0.4),
+          alpha: Math.random() * 0.6 + 0.3,
+          life: 0,
+          maxLife: Math.random() * 200 + 100,
+        };
+      }
+      function init() {
+        particles = Array.from({ length: 50 }, createParticle);
+      }
+      function anim() {
+        ctx.clearRect(0, 0, W, H);
+        particles.forEach((p, i) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life++;
+          const fade =
+            p.life < 30
+              ? p.life / 30
+              : p.life > p.maxLife - 30
+                ? (p.maxLife - p.life) / 30
+                : 1;
+          ctx.save();
+          ctx.globalAlpha = p.alpha * fade;
+          ctx.fillStyle = p.color;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          if (p.life >= p.maxLife || p.y < -20) particles[i] = createParticle();
+        });
+        requestAnimationFrame(anim);
+      }
+      resize();
+      init();
+      anim();
+      window.addEventListener("resize", resize);
+
+      // ─── ANIMATIONS ───
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.animation = "fadeUp 0.7s ease forwards";
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+
+      document
+        .querySelectorAll(".item, .quote")
+        .forEach((el) => observer.observe(el));
+
+      setTimeout(() => {
+        document.querySelector(".btn-next").style.animation =
+          "fadeUp 0.7s ease forwards";
+      }, 1500);
+    </script>
+  </body>
+</html>
